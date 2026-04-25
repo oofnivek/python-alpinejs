@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: crud-app
+    runtime: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r requirements.txt && chmod +x scripts/render_start.sh
+    startCommand: bash scripts/render_start.sh
+    healthCheckPath: /
+    envVars:
+      - key: APP_NAME
+        value: CRUD App
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: "sqlite+aiosqlite:///./data/crud_app.db"
+      - key: ALLOWED_ORIGINS
+        value: '["https://crud-app.onrender.com"]'
+      - key: PYTHON_VERSION
+        value: "3.12.0"
