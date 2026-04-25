@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: crud-app
+    name: oofnivek
     runtime: python
     region: singapore
     plan: free
@@ -19,4 +19,4 @@ services:
       - key: DATABASE_URL
         value: "sqlite+aiosqlite:///./data/crud_app.db"
       - key: ALLOWED_ORIGINS
-        value: '["https://crud-app.onrender.com"]'
+        value: '["https://oofnivek.onrender.com"]'
