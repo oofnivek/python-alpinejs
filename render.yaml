@@ -20,7 +20,3 @@ services:
         value: "sqlite+aiosqlite:///./data/crud_app.db"
       - key: ALLOWED_ORIGINS
         value: '["https://crud-app.onrender.com"]'
-      - key: PYTHON_VERSION
-        value: "3.13.0"
-      - key: CARGO_HOME
-        value: "/opt/render/project/src/.cargo"
