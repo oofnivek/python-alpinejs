@@ -22,3 +22,5 @@ services:
         value: '["https://crud-app.onrender.com"]'
       - key: PYTHON_VERSION
         value: "3.13.0"
+      - key: CARGO_HOME
+        value: "/opt/render/project/src/.cargo"
