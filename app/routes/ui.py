@@ -9,3 +9,8 @@ router = APIRouter(tags=["ui"])
 @router.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+@router.get("/items", response_class=HTMLResponse)
+async def items_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("items.html", {"request": request})

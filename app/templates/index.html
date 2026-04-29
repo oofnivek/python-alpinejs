@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" x-data="app()" x-init="init()">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CRUD App</title>
+  <title>Toolbox Dashboard</title>
 
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -14,12 +14,6 @@
       --color-primary:       #6366f1;
       --color-primary-dark:  #4f46e5;
       --color-primary-light: #e0e7ff;
-      --color-danger:        #ef4444;
-      --color-danger-light:  #fee2e2;
-      --color-success:       #22c55e;
-      --color-success-light: #dcfce7;
-      --color-warning:       #f59e0b;
-      --color-warning-light: #fef3c7;
       --color-gray-50:  #f9fafb;
       --color-gray-100: #f3f4f6;
       --color-gray-200: #e5e7eb;
@@ -33,645 +27,215 @@
       --radius-sm: 0.375rem;
       --radius:    0.5rem;
       --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
       --shadow:    0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
       --font-sans: ui-sans-serif, system-ui, -apple-system, sans-serif;
-      --font-mono: ui-monospace, "Cascadia Code", monospace;
     }
 
     /* ── Reset & base ──────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: var(--font-sans);
-      font-size: 0.875rem;
+      font-size: 1rem;
       line-height: 1.5;
       color: var(--color-gray-800);
       background: var(--color-gray-50);
       min-height: 100vh;
     }
-    [x-cloak] { display: none !important; }
 
     /* ── Layout ────────────────────────────────────────────── */
     .app-shell { display: flex; flex-direction: column; min-height: 100vh; }
 
-    /* Topbar */
     .topbar {
-      position: sticky; top: 0; z-index: 40;
       background: white;
       border-bottom: 1px solid var(--color-gray-200);
       padding: 0 1.5rem;
-      height: 3.5rem;
-      display: flex; align-items: center; justify-content: space-between;
+      height: 4rem;
+      display: flex; align-items: center; justify-content: center;
       box-shadow: var(--shadow-sm);
     }
     .topbar-brand {
-      display: flex; align-items: center; gap: 0.625rem;
-      font-weight: 700; font-size: 1rem; color: var(--color-gray-900);
+      display: flex; align-items: center; gap: 0.75rem;
+      font-weight: 800; font-size: 1.25rem; color: var(--color-gray-900);
       text-decoration: none;
     }
     .topbar-brand-icon {
-      width: 1.75rem; height: 1.75rem; border-radius: var(--radius-sm);
-      background: var(--color-primary);
+      width: 2rem; height: 2rem; border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
       display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 0.875rem; font-weight: 800;
+      color: white; font-size: 1rem; font-weight: 900;
+      box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
     }
 
-    /* Main content */
-    .main { flex: 1; padding: 2rem 1.5rem; max-width: 64rem; margin: 0 auto; width: 100%; }
+    .main { 
+      flex: 1; 
+      padding: 4rem 1.5rem; 
+      max-width: 72rem; 
+      margin: 0 auto; 
+      width: 100%; 
+    }
 
-    /* ── Typography ────────────────────────────────────────── */
-    .text-xs    { font-size: 0.75rem;  line-height: 1rem; }
-    .text-sm    { font-size: 0.875rem; line-height: 1.25rem; }
-    .text-base  { font-size: 1rem;     line-height: 1.5rem; }
-    .text-lg    { font-size: 1.125rem; line-height: 1.75rem; }
-    .text-xl    { font-size: 1.25rem;  line-height: 1.75rem; }
-    .text-2xl   { font-size: 1.5rem;   line-height: 2rem; }
-    .font-medium  { font-weight: 500; }
-    .font-semibold{ font-weight: 600; }
-    .font-bold    { font-weight: 700; }
-    .text-muted { color: var(--color-gray-500); }
-    .text-primary { color: var(--color-primary); }
+    /* ── Hero ──────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--color-gray-900);
+      letter-spacing: -0.025em;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.125rem;
+      color: var(--color-gray-500);
+      max-width: 32rem;
+      margin: 0 auto;
+    }
 
-    /* ── Buttons ───────────────────────────────────────────── */
-    .btn {
-      display: inline-flex; align-items: center; gap: 0.375rem;
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius);
-      font-weight: 500; font-size: 0.875rem;
-      border: 1px solid transparent;
-      cursor: pointer; transition: all 0.15s;
-      text-decoration: none; white-space: nowrap;
+    /* ── Grid ──────────────────────────────────────────────── */
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
     }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-primary {
-      background: var(--color-primary);
-      color: white; border-color: var(--color-primary);
-    }
-    .btn-primary:hover:not(:disabled) { background: var(--color-primary-dark); border-color: var(--color-primary-dark); }
-    .btn-secondary {
-      background: white; color: var(--color-gray-700);
-      border-color: var(--color-gray-300);
-    }
-    .btn-secondary:hover:not(:disabled) { background: var(--color-gray-50); }
-    .btn-danger {
-      background: var(--color-danger); color: white; border-color: var(--color-danger);
-    }
-    .btn-danger:hover:not(:disabled) { filter: brightness(0.9); }
-    .btn-ghost {
-      background: transparent; color: var(--color-gray-500); border-color: transparent;
-      padding: 0.375rem;
-    }
-    .btn-ghost:hover { background: var(--color-gray-100); color: var(--color-gray-700); }
-    .btn-sm { padding: 0.25rem 0.625rem; font-size: 0.75rem; }
-    .btn-icon { padding: 0.5rem; }
 
-    /* ── Form controls ─────────────────────────────────────── */
-    .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
-    .form-label { font-size: 0.875rem; font-weight: 500; color: var(--color-gray-700); }
-    .form-label .required { color: var(--color-danger); margin-left: 2px; }
-    .form-control {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid var(--color-gray-300);
-      border-radius: var(--radius);
-      font-size: 0.875rem; font-family: inherit;
-      color: var(--color-gray-800);
-      background: white;
-      width: 100%;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .form-control:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgb(99 102 241 / 0.15);
-    }
-    .form-control::placeholder { color: var(--color-gray-400); }
-    textarea.form-control { resize: vertical; min-height: 5rem; }
-    .form-error { font-size: 0.75rem; color: var(--color-danger); }
-
-    /* ── Cards ─────────────────────────────────────────────── */
-    .card {
+    /* ── Tool Card ─────────────────────────────────────────── */
+    .tool-card {
       background: white;
       border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
     }
-    .card-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--color-gray-100);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .card-body { padding: 1.25rem; }
-
-    /* ── Table ─────────────────────────────────────────────── */
-    .table-wrapper { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: var(--color-gray-50); }
-    th {
-      padding: 0.625rem 1rem;
-      text-align: left; font-weight: 600; font-size: 0.75rem;
-      text-transform: uppercase; letter-spacing: 0.05em;
-      color: var(--color-gray-500);
-      border-bottom: 1px solid var(--color-gray-200);
-    }
-    td {
-      padding: 0.875rem 1rem;
-      border-bottom: 1px solid var(--color-gray-100);
-      vertical-align: middle;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--color-gray-50); }
-
-    /* ── Badges ────────────────────────────────────────────── */
-    .badge {
-      display: inline-flex; align-items: center;
-      padding: 0.125rem 0.5rem;
-      border-radius: 9999px;
-      font-size: 0.75rem; font-weight: 500;
-    }
-    .badge-active   { background: var(--color-success-light); color: #15803d; }
-    .badge-inactive { background: var(--color-gray-100);      color: var(--color-gray-600); }
-    .badge-archived { background: var(--color-warning-light); color: #92400e; }
-
-    /* ── Modal ─────────────────────────────────────────────── */
-    .modal-backdrop {
-      position: fixed; inset: 0; z-index: 50;
-      background: rgb(0 0 0 / 0.4);
-      display: flex; align-items: center; justify-content: center;
-      padding: 1rem;
-    }
-    .modal {
-      background: white;
-      border-radius: var(--radius-lg);
+    .tool-card:hover {
+      transform: translateY(-4px);
       box-shadow: var(--shadow-lg);
-      width: 100%; max-width: 28rem;
-      animation: modal-in 0.2s ease;
+      border-color: var(--color-primary-light);
     }
-    @keyframes modal-in {
-      from { opacity: 0; transform: translateY(-0.5rem) scale(0.98); }
-      to   { opacity: 1; transform: translateY(0)        scale(1); }
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: var(--color-primary);
+      opacity: 0;
+      transition: opacity 0.3s;
     }
-    .modal-header {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--color-gray-100);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .modal-body    { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
-    .modal-footer  {
-      padding: 1rem 1.5rem;
-      border-top: 1px solid var(--color-gray-100);
-      display: flex; justify-content: flex-end; gap: 0.5rem;
+    .tool-card:hover::before {
+      opacity: 1;
     }
 
-    /* ── Alert ─────────────────────────────────────────────── */
-    .alert {
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius);
-      border: 1px solid;
-      display: flex; align-items: center; gap: 0.5rem;
+    .tool-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: var(--radius-lg);
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+    .tool-icon svg { width: 1.75rem; height: 1.75rem; }
+
+    .tool-content h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-gray-900);
+      margin-bottom: 0.5rem;
+    }
+    .tool-content p {
+      font-size: 0.9375rem;
+      color: var(--color-gray-500);
+      line-height: 1.6;
+    }
+
+    .tool-footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: var(--color-primary);
       font-size: 0.875rem;
     }
-    .alert-error   { background: var(--color-danger-light);  border-color: #fca5a5; color: #991b1b; }
-    .alert-success { background: var(--color-success-light); border-color: #86efac; color: #166534; }
-
-    /* ── Toast ─────────────────────────────────────────────── */
-    .toast-container {
-      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100;
-      display: flex; flex-direction: column; gap: 0.5rem;
+    .tool-card:hover .tool-footer svg {
+      transform: translateX(4px);
     }
-    .toast {
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      font-size: 0.875rem; font-weight: 500;
-      animation: toast-in 0.25s ease;
-      max-width: 22rem;
-    }
-    @keyframes toast-in {
-      from { opacity: 0; transform: translateX(1rem); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    .toast-success { background: #166534; color: white; }
-    .toast-error   { background: #991b1b; color: white; }
-
-    /* ── Search / toolbar ──────────────────────────────────── */
-    .toolbar { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-    .search-wrap { position: relative; flex: 1; min-width: 14rem; }
-    .search-wrap svg { position: absolute; left: 0.625rem; top: 50%; transform: translateY(-50%); color: var(--color-gray-400); }
-    .search-wrap .form-control { padding-left: 2.25rem; }
-
-    /* ── Pagination ────────────────────────────────────────── */
-    .pagination { display: flex; align-items: center; gap: 0.25rem; }
-    .pagination .btn { min-width: 2rem; justify-content: center; }
-    .page-info { font-size: 0.75rem; color: var(--color-gray-500); margin: 0 0.5rem; }
-
-    /* ── Skeleton loader ───────────────────────────────────── */
-    .skeleton {
-      background: var(--color-gray-200);
-      border-radius: var(--radius-sm);
-      animation: shimmer 1.5s infinite;
-    }
-    @keyframes shimmer {
-      0%,100%{ opacity: 1; } 50%{ opacity: 0.4; }
+    .tool-footer svg {
+      transition: transform 0.2s;
     }
 
-    /* ── Utilities ─────────────────────────────────────────── */
-    .flex { display: flex; }
-    .items-center { align-items: center; }
-    .justify-between { justify-content: space-between; }
-    .gap-2 { gap: 0.5rem; }
-    .gap-4 { gap: 1rem; }
-    .mt-4 { margin-top: 1rem; }
-    .mt-6 { margin-top: 1.5rem; }
-    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 20rem; }
-    .empty-state {
-      text-align: center; padding: 4rem 2rem;
-      color: var(--color-gray-400);
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .main { padding: 2rem 1rem; }
+      .hero h1 { font-size: 2rem; }
+      .tool-grid { grid-template-columns: 1fr; }
     }
-    .empty-state svg { margin: 0 auto 1rem; display: block; }
-    .spinner {
-      width: 1.25rem; height: 1.25rem;
-      border: 2px solid currentColor;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Confirm dialog ────────────────────────────────────── */
-    .confirm-dialog .modal { max-width: 22rem; }
   </style>
 </head>
 <body>
-<div class="app-shell">
+  <div class="app-shell">
+    <header class="topbar">
+      <a href="/" class="topbar-brand">
+        <div class="topbar-brand-icon">T</div>
+        Toolbox
+      </a>
+    </header>
 
-  <!-- ── Topbar ───────────────────────────────────────────── -->
-  <header class="topbar">
-    <a href="/" class="topbar-brand">
-      <span class="topbar-brand-icon">C</span>
-      CRUD App
-    </a>
-    <span class="text-xs text-muted" x-text="`${pagination.total} item${pagination.total !== 1 ? 's' : ''} total`"></span>
-  </header>
+    <main class="main">
+      <section class="hero">
+        <h1>Welcome to your Toolbox</h1>
+        <p>A collection of powerful utilities and management tools designed to streamline your workflow.</p>
+      </section>
 
-  <!-- ── Main ─────────────────────────────────────────────── -->
-  <main class="main">
-
-    <!-- Page heading + primary action -->
-    <div class="flex items-center justify-between" style="margin-bottom:1.5rem">
-      <div>
-        <h1 class="text-2xl font-bold" style="color:var(--color-gray-900)">Items</h1>
-        <p class="text-sm text-muted mt-1">Manage your items — create, update, and delete.</p>
-      </div>
-      <button class="btn btn-primary" @click="openCreate()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        New Item
-      </button>
-    </div>
-
-    <!-- Global error -->
-    <div x-show="error" x-cloak class="alert alert-error" style="margin-bottom:1rem">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span x-text="error"></span>
-    </div>
-
-    <!-- Toolbar: search + filter -->
-    <div class="card" style="margin-bottom:1rem">
-      <div class="card-body" style="padding-top:0.875rem;padding-bottom:0.875rem">
-        <div class="toolbar">
-          <div class="search-wrap">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <input
-              class="form-control"
-              type="search"
-              placeholder="Search items…"
-              x-model.debounce.400ms="search"
-              @input="fetchItems()"
-            />
+      <div class="tool-grid">
+        <!-- Items Tool Card -->
+        <a href="/items" class="tool-card">
+          <div class="tool-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 8V21H3V8"></path>
+              <path d="M1 3H23V8H1V3Z"></path>
+              <path d="M10 12H14"></path>
+            </svg>
           </div>
-          <select class="form-control" style="width:auto" x-model="statusFilter" @change="fetchItems()">
-            <option value="">All statuses</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="archived">Archived</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Table card -->
-    <div class="card">
-      <!-- Loading skeleton -->
-      <template x-if="loading">
-        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem">
-          <template x-for="i in 5" :key="i">
-            <div class="skeleton" style="height:2.5rem;border-radius:var(--radius)"></div>
-          </template>
-        </div>
-      </template>
-
-      <!-- Table -->
-      <template x-if="!loading">
-        <div>
-          <div class="table-wrapper" x-show="items.length > 0">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Status</th>
-                  <th>Created</th>
-                  <th style="text-align:right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <template x-for="item in items" :key="item.id">
-                  <tr>
-                    <td class="text-muted font-mono text-xs" x-text="item.id"></td>
-                    <td class="font-medium" x-text="item.title"></td>
-                    <td class="text-muted truncate" x-text="item.description || '—'"></td>
-                    <td>
-                      <span :class="`badge badge-${item.status}`" x-text="item.status"></span>
-                    </td>
-                    <td class="text-muted text-xs" x-text="fmtDate(item.created_at)"></td>
-                    <td style="text-align:right">
-                      <div class="flex gap-2" style="justify-content:flex-end">
-                        <button class="btn btn-ghost btn-icon btn-sm" title="Edit" @click="openEdit(item)">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                        </button>
-                        <button class="btn btn-ghost btn-icon btn-sm" title="Delete" style="color:var(--color-danger)" @click="confirmDelete(item)">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
+          <div class="tool-content">
+            <h2>Items Manager</h2>
+            <p>Complete CRUD interface for managing items with search, filtering, and pagination. Built with FastAPI and Alpine.js.</p>
           </div>
-
-          <!-- Empty state -->
-          <div class="empty-state" x-show="items.length === 0">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--color-gray-300)"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-            <p class="font-medium" style="color:var(--color-gray-500)">No items yet</p>
-            <p class="text-sm" style="margin-top:.25rem">Create your first item to get started.</p>
+          <div class="tool-footer">
+            Launch Tool
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </div>
+        </a>
 
-          <!-- Pagination -->
-          <div x-show="items.length > 0" class="flex items-center justify-between" style="padding:0.875rem 1.25rem;border-top:1px solid var(--color-gray-100)">
-            <span class="page-info" x-text="`Page ${pagination.page} of ${pagination.pages}`"></span>
-            <div class="pagination">
-              <button class="btn btn-secondary btn-sm" @click="goPage(pagination.page - 1)" :disabled="pagination.page <= 1">‹</button>
-              <template x-for="p in pageRange()" :key="p">
-                <button
-                  class="btn btn-sm"
-                  :class="p === pagination.page ? 'btn-primary' : 'btn-secondary'"
-                  @click="goPage(p)"
-                  x-text="p"
-                ></button>
-              </template>
-              <button class="btn btn-secondary btn-sm" @click="goPage(pagination.page + 1)" :disabled="pagination.page >= pagination.pages">›</button>
-            </div>
+        <!-- Placeholder for future tools -->
+        <div class="tool-card" style="opacity: 0.6; cursor: default; border-style: dashed;">
+          <div class="tool-icon" style="background: var(--color-gray-100); color: var(--color-gray-400);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+          </div>
+          <div class="tool-content">
+            <h2 style="color: var(--color-gray-400);">Add New Tool</h2>
+            <p>More tools coming soon. Expand your toolbox with custom modules.</p>
           </div>
         </div>
-      </template>
-    </div>
-
-  </main><!-- /main -->
-</div><!-- /app-shell -->
-
-<!-- ── Create / Edit Modal ───────────────────────────────── -->
-<div class="modal-backdrop" x-show="showForm" x-cloak @click.self="closeForm()" x-transition.opacity>
-  <div class="modal" @click.stop>
-    <div class="modal-header">
-      <h2 class="text-lg font-semibold" x-text="editingItem ? 'Edit Item' : 'New Item'"></h2>
-      <button class="btn btn-ghost btn-icon" @click="closeForm()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Title <span class="required">*</span></label>
-        <input class="form-control" type="text" placeholder="Enter a title…" x-model="form.title" @keydown.enter="saveItem()" />
-        <span class="form-error" x-show="formErrors.title" x-text="formErrors.title"></span>
       </div>
-      <div class="form-group">
-        <label class="form-label">Description</label>
-        <textarea class="form-control" placeholder="Optional description…" x-model="form.description"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Status</label>
-        <select class="form-control" x-model="form.status">
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-          <option value="archived">Archived</option>
-        </select>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" @click="closeForm()" :disabled="saving">Cancel</button>
-      <button class="btn btn-primary" @click="saveItem()" :disabled="saving">
-        <span x-show="saving" class="spinner" style="width:0.875rem;height:0.875rem"></span>
-        <span x-text="editingItem ? 'Save changes' : 'Create item'"></span>
-      </button>
-    </div>
+    </main>
   </div>
-</div>
-
-<!-- ── Confirm Delete Modal ──────────────────────────────── -->
-<div class="modal-backdrop confirm-dialog" x-show="showConfirm" x-cloak @click.self="showConfirm=false" x-transition.opacity>
-  <div class="modal" @click.stop>
-    <div class="modal-header">
-      <h2 class="text-base font-semibold" style="color:var(--color-danger)">Delete item</h2>
-    </div>
-    <div class="modal-body">
-      <p class="text-sm">Are you sure you want to delete <strong x-text="deletingItem?.title"></strong>? This action cannot be undone.</p>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" @click="showConfirm=false">Cancel</button>
-      <button class="btn btn-danger" @click="doDelete()" :disabled="saving">
-        <span x-show="saving" class="spinner" style="width:0.875rem;height:0.875rem"></span>
-        Delete
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Toast container ───────────────────────────────────── -->
-<div class="toast-container" x-data="{ toasts: [] }" @toast.window="addToast($event.detail)">
-  <template x-for="t in toasts" :key="t.id">
-    <div class="toast" :class="`toast-${t.type}`" x-text="t.message" x-transition></div>
-  </template>
-  <script>
-    // Tiny toast helper on the toast container
-    document.addEventListener('alpine:init', () => {
-      Alpine.data('toastHelper', () => ({
-        toasts: [],
-        addToast({ message, type = 'success' }) {
-          const id = Date.now();
-          this.toasts.push({ id, message, type });
-          setTimeout(() => { this.toasts = this.toasts.filter(t => t.id !== id); }, 3500);
-        }
-      }));
-    });
-  </script>
-</div>
-
-<!-- ── App logic ─────────────────────────────────────────── -->
-<script>
-function app() {
-  return {
-    // ── State ──────────────────────────────────────────────
-    items:       [],
-    loading:     false,
-    saving:      false,
-    error:       null,
-    search:      '',
-    statusFilter:'',
-    pagination:  { page: 1, pages: 1, page_size: 20, total: 0 },
-
-    showForm:    false,
-    editingItem: null,
-    form:        { title: '', description: '', status: 'active' },
-    formErrors:  {},
-
-    showConfirm: false,
-    deletingItem: null,
-
-    // ── Lifecycle ──────────────────────────────────────────
-    async init() {
-      await this.fetchItems();
-    },
-
-    // ── API helpers ────────────────────────────────────────
-    async fetchItems(page = 1) {
-      this.loading = true;
-      this.error   = null;
-      try {
-        const params = new URLSearchParams({
-          page, page_size: this.pagination.page_size
-        });
-        if (this.search)       params.set('search', this.search);
-        if (this.statusFilter) params.set('status', this.statusFilter);
-
-        const res  = await fetch(`/api/items?${params}`);
-        if (!res.ok) throw new Error(await res.text());
-        const data = await res.json();
-
-        this.items      = data.items;
-        this.pagination = { page: data.page, pages: data.pages, page_size: data.page_size, total: data.total };
-      } catch (e) {
-        this.error = `Failed to load items: ${e.message}`;
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async saveItem() {
-      this.formErrors = {};
-      if (!this.form.title.trim()) {
-        this.formErrors.title = 'Title is required.';
-        return;
-      }
-      this.saving = true;
-      try {
-        const url    = this.editingItem ? `/api/items/${this.editingItem.id}` : '/api/items';
-        const method = this.editingItem ? 'PATCH' : 'POST';
-        const res    = await fetch(url, {
-          method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(this.form),
-        });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
-          throw new Error(err.detail ?? JSON.stringify(err));
-        }
-        this.toast(this.editingItem ? 'Item updated!' : 'Item created!', 'success');
-        this.closeForm();
-        await this.fetchItems(this.pagination.page);
-      } catch (e) {
-        this.toast(`Error: ${e.message}`, 'error');
-      } finally {
-        this.saving = false;
-      }
-    },
-
-    async doDelete() {
-      if (!this.deletingItem) return;
-      this.saving = true;
-      try {
-        const res = await fetch(`/api/items/${this.deletingItem.id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error('Delete failed');
-        this.toast('Item deleted.', 'success');
-        this.showConfirm = false;
-        this.deletingItem = null;
-        const newPage = (this.items.length === 1 && this.pagination.page > 1)
-          ? this.pagination.page - 1 : this.pagination.page;
-        await this.fetchItems(newPage);
-      } catch (e) {
-        this.toast(`Error: ${e.message}`, 'error');
-      } finally {
-        this.saving = false;
-      }
-    },
-
-    // ── Modal helpers ──────────────────────────────────────
-    openCreate() {
-      this.editingItem = null;
-      this.form        = { title: '', description: '', status: 'active' };
-      this.formErrors  = {};
-      this.showForm    = true;
-    },
-
-    openEdit(item) {
-      this.editingItem = item;
-      this.form        = { title: item.title, description: item.description || '', status: item.status };
-      this.formErrors  = {};
-      this.showForm    = true;
-    },
-
-    closeForm() {
-      this.showForm    = false;
-      this.editingItem = null;
-    },
-
-    confirmDelete(item) {
-      this.deletingItem = item;
-      this.showConfirm  = true;
-    },
-
-    // ── Pagination helpers ─────────────────────────────────
-    goPage(p) {
-      if (p < 1 || p > this.pagination.pages) return;
-      this.fetchItems(p);
-    },
-
-    pageRange() {
-      const total   = this.pagination.pages;
-      const current = this.pagination.page;
-      const delta   = 2;
-      const range   = [];
-      for (let i = Math.max(1, current - delta); i <= Math.min(total, current + delta); i++) {
-        range.push(i);
-      }
-      return range;
-    },
-
-    // ── Formatting ─────────────────────────────────────────
-    fmtDate(iso) {
-      if (!iso) return '—';
-      return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(iso));
-    },
-
-    // ── Toast ──────────────────────────────────────────────
-    toast(message, type = 'success') {
-      window.dispatchEvent(new CustomEvent('toast', { detail: { message, type } }));
-    },
-  };
-}
-</script>
 </body>
 </html>
