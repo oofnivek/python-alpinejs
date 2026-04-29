@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic Tac Toe Online - Toolbox</title>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    /* ── Design tokens ─────────────────────────────────────── */
+    :root {
+      --color-primary:       #6366f1;
+      --color-primary-dark:  #4f46e5;
+      --color-primary-light: #e0e7ff;
+      --color-x:             #f43f5e;
+      --color-o:             #0ea5e9;
+      --color-gray-50:  #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-200: #e5e7eb;
+      --color-gray-300: #d1d5db;
+      --color-gray-400: #9ca3af;
+      --color-gray-500: #6b7280;
+      --color-gray-600: #4b5563;
+      --color-gray-700: #374151;
+      --color-gray-800: #1f2937;
+      --color-gray-900: #111827;
+      --radius:    0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --shadow:    0 1px 3px 0 rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      --font-sans: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    /* ── Reset & base ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-gray-800);
+      background: var(--color-gray-50);
+      min-height: 100vh;
+    }
+    [x-cloak] { display: none !important; }
+
+    /* ── Layout ────────────────────────────────────────────── */
+    .app-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+    .topbar {
+      background: white;
+      border-bottom: 1px solid var(--color-gray-200);
+      padding: 0 1.5rem;
+      height: 3.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: var(--shadow);
+    }
+    .topbar-brand {
+      display: flex; align-items: center; gap: 0.625rem;
+      font-weight: 700; font-size: 1rem; color: var(--color-gray-900);
+      text-decoration: none;
+    }
+    .topbar-brand-icon {
+      width: 1.75rem; height: 1.75rem; border-radius: 0.375rem;
+      background: var(--color-primary);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 0.875rem; font-weight: 800;
+    }
+
+    .main { flex: 1; padding: 3rem 1.5rem; max-width: 40rem; margin: 0 auto; width: 100%; }
+
+    /* ── Online Setup ──────────────────────────────────────── */
+    .room-setup {
+      text-align: center;
+      background: white;
+      padding: 3rem 2rem;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-gray-200);
+      box-shadow: var(--shadow-lg);
+    }
+    .room-setup h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .input-group { margin-top: 1.5rem; display: flex; gap: 0.5rem; justify-content: center; }
+    .form-control {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-gray-300);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      width: 100%;
+      max-width: 12rem;
+    }
+
+    /* ── Game Styling ──────────────────────────────────────── */
+    .game-header { text-align: center; margin-bottom: 2rem; }
+    .game-header h1 { font-size: 1.75rem; font-weight: 800; color: var(--color-gray-900); }
+    .room-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: var(--color-gray-200);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-gray-600);
+      margin-top: 0.5rem;
+    }
+
+    .status-card {
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-gray-200);
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: var(--shadow);
+    }
+
+    .role-info { font-size: 0.875rem; color: var(--color-gray-500); }
+    .role-indicator { font-weight: 800; }
+
+    .game-status-text {
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      width: 100%;
+      text-align: center;
+    }
+    .status-your-turn { background: var(--color-primary-light); color: var(--color-primary); }
+    .status-waiting { background: var(--color-gray-100); color: var(--color-gray-500); }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      background: var(--color-gray-200);
+      padding: 0.75rem;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      aspect-ratio: 1 / 1;
+    }
+
+    .cell {
+      background: white;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .cell.occupied { cursor: default; }
+    .cell.disabled { cursor: not-allowed; opacity: 0.8; }
+    .cell:hover:not(.occupied):not(.disabled) { background: var(--color-gray-50); }
+
+    .mark-x { color: var(--color-x); animation: pop 0.3s; }
+    .mark-o { color: var(--color-o); animation: pop 0.3s; }
+
+    .winning-cell { background: var(--color-primary-light); color: var(--color-primary); }
+
+    @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-lg);
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--color-primary); color: white; }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .win-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 50;
+    }
+    .win-modal {
+      background: white;
+      padding: 2.5rem;
+      border-radius: var(--radius-xl);
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+  </style>
+</head>
+<body x-data="game()">
+  <div class="app-shell">
+    <header class="topbar">
+      <a href="/" class="topbar-brand">
+        <span class="topbar-brand-icon">T</span>
+        Toolbox
+      </a>
+      <div class="text-sm font-medium text-gray-500">WebSocket Online Play</div>
+    </header>
+
+    <main class="main">
+      
+      <!-- Room Selection -->
+      <template x-if="!connected">
+        <div class="room-setup">
+          <h1>Tic Tac Toe Online</h1>
+          <p class="text-gray-500">Enter a room code to join or create a session.</p>
+          <div class="input-group">
+            <input type="text" class="form-control" x-model="roomId" placeholder="Room Code (e.g. 1234)" @keydown.enter="connect()">
+            <button class="btn btn-primary" @click="connect()" :disabled="!roomId">Join Room</button>
+          </div>
+        </div>
+      </template>
+
+      <!-- Game View -->
+      <template x-if="connected">
+        <div>
+          <div class="game-header">
+            <h1>Tic Tac Toe</h1>
+            <div class="room-badge" x-text="`ROOM: ${roomId}`"></div>
+          </div>
+
+          <div class="status-card">
+            <div class="role-info">
+              You are playing as: 
+              <span class="role-indicator" :style="{ color: role === 'X' ? 'var(--color-x)' : 'var(--color-o)' }" x-text="`Player ${role}`"></span>
+            </div>
+            
+            <div class="game-status-text" 
+                 :class="isYourTurn ? 'status-your-turn' : 'status-waiting'"
+                 x-text="statusText">
+            </div>
+          </div>
+
+          <div class="board">
+            <template x-for="(cell, index) in board" :key="index">
+              <div 
+                class="cell" 
+                :class="{ 
+                  'occupied': cell !== null, 
+                  'disabled': !isYourTurn || cell !== null,
+                  'winning-cell': winningLine.includes(index)
+                }"
+                @click="makeMove(index)"
+              >
+                <template x-if="cell === 'X'"><span class="mark-x">✕</span></template>
+                <template x-if="cell === 'O'"><span class="mark-o">○</span></template>
+              </div>
+            </template>
+          </div>
+
+          <div style="margin-top: 2rem; text-align: center;">
+            <button class="btn btn-primary" @click="sendReset()" style="background: var(--color-gray-200); color: var(--color-gray-700);">
+              Reset Game
+            </button>
+          </div>
+        </div>
+      </template>
+    </main>
+
+    <!-- Win/Draw Overlay -->
+    <div class="win-overlay" x-show="winner || isDraw" x-cloak x-transition.opacity>
+      <div class="win-modal">
+        <template x-if="winner">
+          <h2 class="text-2xl font-extrabold mb-4">
+            <span :style="{ color: winner === 'X' ? 'var(--color-x)' : 'var(--color-o)' }" x-text="`Player ${winner}`"></span> Wins!
+          </h2>
+        </template>
+        <template x-if="isDraw">
+          <h2 class="text-2xl font-extrabold mb-4">It's a Draw!</h2>
+        </template>
+        <button class="btn btn-primary" @click="sendReset()">New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function game() {
+      return {
+        roomId: '',
+        connected: false,
+        socket: null,
+        role: null, // 'X' or 'O'
+        board: Array(9).fill(null),
+        turn: 'X',
+        winner: null,
+        isDraw: false,
+        winningLine: [],
+        started: false,
+
+        get isYourTurn() {
+          return this.started && this.role === this.turn && !this.winner && !this.isDraw;
+        },
+
+        get statusText() {
+          if (!this.started) return 'Waiting for opponent...';
+          if (this.winner) return `Player ${this.winner} Wins!`;
+          if (this.isDraw) return "It's a Draw!";
+          return this.isYourTurn ? 'Your Turn' : "Opponent's Turn";
+        },
+
+        connect() {
+          if (!this.roomId) return;
+          
+          const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+          const wsUrl = `${protocol}//${window.location.host}/ws/tictactoe/${this.roomId}`;
+          
+          this.socket = new WebSocket(wsUrl);
+          
+          this.socket.onopen = () => {
+            this.connected = true;
+          };
+          
+          this.socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log('WS Message:', data);
+            
+            if (data.type === 'init') {
+              if (data.role) this.role = data.role;
+              this.board = data.board;
+              this.turn = data.turn;
+              if (data.reset) {
+                this.winner = null;
+                this.isDraw = false;
+                this.winningLine = [];
+              }
+            } else if (data.type === 'start') {
+              this.started = true;
+            } else if (data.type === 'update') {
+              this.board = data.board;
+              if (data.turn) this.turn = data.turn;
+              if (data.winner) {
+                this.winner = data.winner;
+                this.winningLine = data.winning_line || [];
+              }
+              if (data.is_draw) this.isDraw = true;
+            } else if (data.type === 'opponent_disconnected') {
+              alert(data.message);
+              this.started = false;
+            } else if (data.type === 'error') {
+              alert(data.message);
+              this.socket.close();
+            }
+          };
+          
+          this.socket.onclose = () => {
+            this.connected = false;
+            this.started = false;
+          };
+        },
+
+        makeMove(index) {
+          if (!this.isYourTurn || this.board[index]) return;
+          this.socket.send(JSON.stringify({ type: 'move', index }));
+        },
+
+        sendReset() {
+          this.socket.send(JSON.stringify({ type: 'reset' }));
+          this.winner = null;
+          this.isDraw = false;
+          this.winningLine = [];
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -19,3 +19,8 @@ async def items_page(request: Request) -> HTMLResponse:
 @router.get("/tictactoe", response_class=HTMLResponse)
 async def tictactoe_page(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("tictactoe.html", {"request": request})
+
+
+@router.get("/tictactoe-online", response_class=HTMLResponse)
+async def tictactoe_online_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("tictactoe_online.html", {"request": request})

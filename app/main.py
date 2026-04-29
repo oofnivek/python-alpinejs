@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.database import Base, engine
-from app.routes import items_router, ui_router
+from app.routes import items_router, ui_router, ws_router
 
 settings = get_settings()
 
@@ -43,6 +43,7 @@ def create_app() -> FastAPI:
     # Routers
     app.include_router(ui_router)
     app.include_router(items_router)
+    app.include_router(ws_router)
 
     return app
 
