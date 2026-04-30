@@ -24,3 +24,6 @@ async def tictactoe_page(request: Request) -> HTMLResponse:
 @router.get("/tictactoe-online", response_class=HTMLResponse)
 async def tictactoe_online_page(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("tictactoe_online.html", {"request": request})
+@router.get("/reversi", response_class=HTMLResponse)
+async def reversi_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("reversi.html", {"request": request})
